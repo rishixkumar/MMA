@@ -59,4 +59,5 @@ logs/
 
 # Alembic
 alembic/versions/*.py
-!alembic/versions/__init__.py 
+!alembic/versions/__init__.py .env
+.env

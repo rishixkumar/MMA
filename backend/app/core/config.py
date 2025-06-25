@@ -1,15 +1,17 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
 import os
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    # Database settings - using SQLite for development
-    DATABASE_URL: str = "sqlite:///./mma.db"
+    # Database settings
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./mma.db")
     
-    # JWT settings
-    SECRET_KEY: str = "your-secret-key-here"
+    # JWT settings - NOW SECURE
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "fallback-key-for-dev-only")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    
+    # Frontend URL - NOW CONFIGURABLE
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
     
     # App settings
     APP_NAME: str = "MMA API"
@@ -19,7 +21,7 @@ class Settings(BaseSettings):
     SMTP_USERNAME: str = os.getenv("SMTP_USERNAME", "")
     SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
     SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.gmail.com")
-    SMTP_PORT: int = int(os.getenv("SMTP_PORT", 587))
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
     EMAIL_FROM: str = os.getenv("EMAIL_FROM", "noreply@yourdomain.com")
     
     class Config:
