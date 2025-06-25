@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// IMPORTANT: Set REACT_APP_API_BASE_URL in your .env file (not committed to git)
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
 export const authAPI = {
   login: async (email: string, password: string) => {
