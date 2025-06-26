@@ -1,32 +1,44 @@
-import React from "react";
+import React, { useState } from 'react';
 
-const DarkModeToggle: React.FC = () => {
-  const [dark, setDark] = React.useState(
-    () => localStorage.getItem("theme") === "dark"
-  );
+interface DarkModeToggleProps {
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+}
 
-  React.useEffect(() => {
-    if (dark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [dark]);
+const DarkModeToggle: React.FC<DarkModeToggleProps> = ({ darkMode, toggleDarkMode }) => {
+  const [rotation, setRotation] = useState(0);
+
+  const handleToggle = () => {
+    // Toggle rotation: 0° → -270° → 0° → -270°...
+    setRotation(prev => prev === 0 ? -270 : 0);
+    toggleDarkMode();
+  };
 
   return (
-    <button
-      aria-label="Toggle dark mode"
-      className="absolute right-6 top-6 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-blue-200 dark:hover:bg-blue-800 transition"
-      onClick={() => setDark((v) => !v)}
-    >
-      {dark ? (
-        <span role="img" aria-label="Light mode">🌞</span>
-      ) : (
-        <span role="img" aria-label="Dark mode">🌙</span>
-      )}
-    </button>
+    <div className="absolute top-6 right-6" style={{ position: 'absolute', top: '6px', right: '24px' }}>
+      <button
+        aria-label="Toggle dark mode"
+        onClick={handleToggle}
+        className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 border border-white/10 hover:scale-110 active:scale-95"
+        style={{
+          transform: `translateY(30px) rotate(${rotation}deg)`,
+          transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, transform 0.3s ease',
+        }}
+      >
+        <span 
+          className={`text-2xl font-bold select-none transition-colors duration-300 ${
+            darkMode ? 'text-yellow-300' : 'text-slate-600'
+          }`}
+          style={{
+            fontFamily: 'monospace',
+            lineHeight: '1',
+            display: 'block',
+          }}
+        >
+          |
+        </span>
+      </button>
+    </div>
   );
 };
 

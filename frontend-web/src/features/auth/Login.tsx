@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { authAPI } from '../../services/api';
+import { usePersistentTheme } from '../../hooks/usePersistentTheme';
+import DarkModeToggle from '../../components/DarkModeToggle';
 
 interface LoginProps {
   onSignupClick: () => void;
@@ -25,15 +27,8 @@ const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
   const [resetMode, setResetMode] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
 
-  // Dark mode toggle
-  const [darkMode, setDarkMode] = useState(false);
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
+  // Persistent dark mode
+  const [darkMode, setDarkMode] = usePersistentTheme();
 
   // Check for reset token in URL on component mount
   useEffect(() => {
@@ -101,15 +96,7 @@ const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
       <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-medical-emerald/20 rounded-full filter blur-3xl"></div>
 
       {/* Dark mode toggle */}
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        className="absolute top-6 right-6 p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 border border-white/10"
-        aria-label="Toggle dark mode"
-      >
-        <svg className="w-6 h-6 text-medical-blue dark:text-medical-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={darkMode ? "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" : "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"} />
-        </svg>
-      </button>
+      <DarkModeToggle darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} />
 
       {/* Main card */}
       <div className="w-full max-w-md mx-4 relative z-10">
@@ -223,10 +210,23 @@ const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-medical-blue dark:hover:text-medical-teal transition-colors duration-200"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-medical-blue dark:hover:text-medical-teal transition-all duration-300 transform hover:scale-110 active:scale-95"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showPassword ? "M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.675-6.825M15 12a3 3 0 11-6 0 3 3 0 016 0z" : "M15 12a3 3 0 11-6 0 3 3 0 016 0z"} />
+                      <svg 
+                        className={`w-5 h-5 transition-all duration-300 ${showPassword ? 'rotate-12 scale-110' : 'rotate-0 scale-100'}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d={showPassword 
+                            ? "M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.675-6.825M15 12a3 3 0 11-6 0 3 3 0 016 0z" 
+                            : "M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          } 
+                        />
                       </svg>
                     </button>
                   </div>
@@ -244,7 +244,7 @@ const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-medical-blue to-medical-teal text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-medical-blue/25 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full py-3 px-4 bg-gradient-to-r from-medical-blue to-medical-teal text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-medical-blue/25 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none animate-grow-glow"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center">
@@ -261,7 +261,7 @@ const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
                     <button
                       type="button"
                       onClick={onSignupClick}
-                      className="font-semibold text-medical-emerald dark:text-medical-teal hover:text-medical-emerald/80 dark:hover:text-medical-teal/80 transition-colors duration-200"
+                      className="font-semibold text-medical-emerald dark:text-medical-teal hover:text-medical-emerald/80 dark:hover:text-medical-teal/80 transition-colors duration-200 text-link-underline"
                     >
                       Create Account
                     </button>
