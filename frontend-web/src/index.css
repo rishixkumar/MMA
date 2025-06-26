@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .animate-ping-scale {
+    animation: pingScale 0.5s cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  /* Button growth and glow animation on hover */
+  .animate-grow-glow:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(67, 160, 71, 0.7);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Text link underline animation */
+  .text-link-underline {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .text-link-underline::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: currentColor;
+    transition: width 0.3s ease;
+  }
+
+  .text-link-underline:hover::after {
+    width: 100%;
+  }
+}
