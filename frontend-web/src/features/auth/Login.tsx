@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../../services/api';
 import { usePersistentTheme } from '../../hooks/usePersistentTheme';
 import DarkModeToggle from '../../components/DarkModeToggle';
 
 interface LoginProps {
-  onSignupClick: () => void;
+  onSignupClick?: () => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,7 +48,10 @@ const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
     setMessage('');
     try {
       const result = await authAPI.login(email, password);
+      localStorage.setItem('access_token', result.access_token);
       setMessage(`✅ Login successful! Welcome ${result.user.email}`);
+      // Redirect to dashboard after successful login
+      setTimeout(() => navigate('/dashboard'), 1000);
     } catch (error: any) {
       setMessage(`❌ Login failed: ${error.response?.data?.detail || 'Unknown error'}`);
     }

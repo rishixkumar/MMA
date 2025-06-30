@@ -3,9 +3,10 @@ import { usePersistentTheme } from '../../hooks/usePersistentTheme';
 import { authAPI } from '../../services/api';
 import MmaLogo from '../../components/MmaLogo';
 import DarkModeToggle from '../../components/DarkModeToggle';
+import { useNavigate } from 'react-router-dom';
 
 interface RegisterProps {
-  onSigninClick: () => void;
+  onSigninClick?: () => void; // Make it optional
 }
 
 const Register: React.FC<RegisterProps> = ({ onSigninClick }) => {
@@ -20,6 +21,15 @@ const Register: React.FC<RegisterProps> = ({ onSigninClick }) => {
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSigninClick = () => {
+    if (onSigninClick) {
+      onSigninClick();
+    } else {
+      navigate('/login');
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -199,7 +209,7 @@ const Register: React.FC<RegisterProps> = ({ onSigninClick }) => {
                   Already have an account?{' '}
                   <button
                     type="button"
-                    onClick={onSigninClick}
+                    onClick={handleSigninClick}
                     className="font-semibold text-medical-blue dark:text-medical-teal hover:text-medical-blue/80 dark:hover:text-medical-teal/80 transition-colors duration-200 text-link-underline"
                   >
                     Sign In
