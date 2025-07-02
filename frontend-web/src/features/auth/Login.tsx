@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../../services/api';
+import { registerFcmToken } from '../../services/api';
 import { usePersistentTheme } from '../../hooks/usePersistentTheme';
 import DarkModeToggle from '../../components/DarkModeToggle';
 
@@ -50,6 +51,8 @@ const Login: React.FC<LoginProps> = ({ onSignupClick }) => {
       const result = await authAPI.login(email, password);
       localStorage.setItem('access_token', result.access_token);
       setMessage(`✅ Login successful! Welcome ${result.user.email}`);
+      // Register the FCM token with the backend
+      await registerFcmToken(result.user.id);
       // Redirect to dashboard after successful login
       setTimeout(() => navigate('/dashboard'), 1000);
     } catch (error: any) {

@@ -61,3 +61,7 @@ logs/
 alembic/versions/*.py
 !alembic/versions/__init__.py .env
 .env
+
+# FCM test files
+fcm_test.py
+fcm_test.json

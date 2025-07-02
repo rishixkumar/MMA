@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './features/auth/Login';
 import Register from './features/auth/Register';
 import Dashboard from './features/dashboard/Dashboard';
-import { getFCMToken } from './services/firebase';
+import { getFCMToken, messaging } from './services/firebase';
+import { onMessage } from 'firebase/messaging';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Auth check function
 const isAuthenticated = () => !!localStorage.getItem('access_token');
@@ -14,6 +17,15 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
 }
 
 function App() {
+  useEffect(() => {
+    const unsubscribe = onMessage(messaging, (payload) => {
+      toast.info(
+        `${payload.notification?.title || "Notification"}: ${payload.notification?.body || ""}`
+      );
+    });
+    return unsubscribe;
+  }, []);
+
   const handleGetToken = async () => {
     const token = await getFCMToken();
     console.log('FCM Token:', token);
@@ -22,6 +34,7 @@ function App() {
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={5000} />
       <h1>MMA Frontend Test</h1>
       <button onClick={handleGetToken}>Get FCM Token</button>
       <Router>

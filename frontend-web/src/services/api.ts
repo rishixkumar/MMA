@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getFCMToken } from './firebase';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -103,6 +104,19 @@ export const medicationAPI = {
     await api.delete(`/medications/${id}`);
   }
 };
+
+// Call this after user login/registration
+export async function registerFcmToken(userId: number) {
+  const token = await getFCMToken();
+  if (token) {
+    await api.patch(`/users/users/${userId}/fcm_token`, null, {
+      params: { token }
+    });
+    console.log("FCM token registered with backend:", token);
+  } else {
+    console.warn("No FCM token retrieved.");
+  }
+}
 
 // Export the configured axios instance for direct use if needed
 export default api;

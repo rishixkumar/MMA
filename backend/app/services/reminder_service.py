@@ -4,6 +4,21 @@ from sqlalchemy import text
 from app.models.reminder import Reminder
 from app.core.firebase import messaging
 
+# Real FCM notification sender
+from firebase_admin import messaging as admin_messaging
+
+def send_fcm_notification(token: str, title: str, body: str, data: dict = None):
+    message = admin_messaging.Message(
+        notification=admin_messaging.Notification(
+            title=title,
+            body=body,
+        ),
+        token=token,
+        data=data or {},
+    )
+    response = admin_messaging.send(message)
+    print("FCM message sent:", response)
+
 def calculate_next_trigger(reminder: Reminder) -> datetime:
     """Calculate next trigger time (24h recurrence by default)"""
     return reminder.next_trigger + timedelta(days=1)
@@ -33,17 +48,12 @@ def send_scheduled_reminders(db):
         # Send notification to each device token
         for token in fcm_tokens:
             if token:  # Skip if token missing
-                messaging.send({
-                    "token": token,
-                    "notification": {
-                        "title": "Medication Reminder",
-                        "body": f"Time to take {reminder.medication.name}"
-                    },
-                    "data": {
-                        "type": "reminder",
-                        "medication_id": str(reminder.medication_id)
-                    }
-                })
+                send_fcm_notification(
+                    token,
+                    "Medication Reminder",
+                    f"Time to take {reminder.medication.name}",
+                    {"type": "reminder", "medication_id": str(reminder.medication_id)}
+                )
                 print(f"Sent notification to token: {token}")
 
         # Update next trigger time
