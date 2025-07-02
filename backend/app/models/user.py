@@ -14,3 +14,4 @@ class User(Base):
     is_verified = Column(Boolean, default=False)
     caregiver_id = Column(Integer, ForeignKey('users.id'), nullable=True)
     dependents = relationship("User", backref="caregiver", remote_side="User.id")
+    fcm_token = Column(String(255), nullable=True)

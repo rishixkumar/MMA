@@ -61,3 +61,13 @@ def remove_dependent(
 @router.get("/test")
 def test_endpoint():
     return {"message": "Users endpoint is working!"}
+
+
+@router.patch("/users/{user_id}/fcm_token")
+def update_fcm_token(user_id: int, token: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.fcm_token = token
+    db.commit()
+    return {"message": f"FCM token updated {token}"}
