@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './features/auth/Login';
 import Register from './features/auth/Register';
 import Dashboard from './features/dashboard/Dashboard';
+import { getFCMToken } from './services/firebase';
 
 // Auth check function
 const isAuthenticated = () => !!localStorage.getItem('access_token');
@@ -13,23 +14,33 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
 }
 
 function App() {
+  const handleGetToken = async () => {
+    const token = await getFCMToken();
+    console.log('FCM Token:', token);
+    alert('FCM Token: ' + token);
+  };
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        {/* Default route */}
-        <Route path="*" element={<Navigate to={isAuthenticated() ? "/dashboard" : "/login"} />} />
-      </Routes>
-    </Router>
+    <>
+      <h1>MMA Frontend Test</h1>
+      <button onClick={handleGetToken}>Get FCM Token</button>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          {/* Default route */}
+          <Route path="*" element={<Navigate to={isAuthenticated() ? "/dashboard" : "/login"} />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 

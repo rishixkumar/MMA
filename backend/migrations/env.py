@@ -3,6 +3,7 @@ import os
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
+from app.models.reminder import Reminder
 
 # Add the parent directory to sys.path so we can import our app
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -11,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.core.database import Base
 from app.core.config import settings
 from app.models.user import User  # Import your User model
+from app.models.medication import Medication
 
 # this is the Alembic Config object
 config = context.config
