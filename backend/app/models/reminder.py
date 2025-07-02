@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from datetime import datetime
 from app.core.database import Base
 from sqlalchemy.orm import relationship
+from app.models.medication import Medication
 
 class Reminder(Base):
     __tablename__ = "reminders"
